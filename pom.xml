@@ -8,8 +8,8 @@
   <version>1.0.0</version>
 
   <properties>
-    <maven.compiler.source>14</maven.compiler.source>
-    <maven.compiler.target>14</maven.compiler.target>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
   </properties>
   <name>pr2 - Programmierung II</name>
 
@@ -42,10 +42,12 @@
     <module>lession06</module>
     <module>lession07</module>
     <module>lession08</module>
+    <module>lession09</module>
     <module>lab01</module>
     <module>lab02</module>
     <module>lab03</module>
     <module>lab04</module>
+    <module>lab05</module>
   </modules>
 
 </project>
