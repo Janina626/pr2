@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<!--
+    Einfacher Counter mit MVP-Pattern.
+    Demonstriert die Trennung von View und Logik.
+-->
+
+<VBox alignment="CENTER" spacing="20" style="-fx-background-color: #f0f0f0;"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="de.bht.pr2.lession09.e05_mvp_simple.view.CounterView">
+
+    <padding>
+        <Insets bottom="30" left="30" right="30" top="30"/>
+    </padding>
+
+    <!-- Titel -->
+    <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="MVP Counter Demo"/>
+
+    <!-- Zaehler-Anzeige -->
+    <Label fx:id="counterLabel"
+           style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-text-fill: #333333;"
+           text="0"/>
+
+    <!-- Buttons -->
+    <HBox alignment="CENTER" spacing="15">
+        <Button onAction="#handleDecrement"
+                style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 20px; -fx-min-width: 50px;"
+                text="-"/>
+        <Button onAction="#handleReset"
+                style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-size: 14px;"
+                text="Reset"/>
+        <Button onAction="#handleIncrement"
+                style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 20px; -fx-min-width: 50px;"
+                text="+"/>
+    </HBox>
+
+    <!-- Info-Text -->
+    <Label style="-fx-font-size: 11px; -fx-text-fill: #666666;"
+           text="Model-View-Presenter Pattern Demonstration"/>
+
+</VBox>
