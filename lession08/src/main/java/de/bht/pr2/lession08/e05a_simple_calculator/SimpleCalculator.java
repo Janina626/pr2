@@ -5,7 +5,10 @@ import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -73,10 +76,20 @@ public class SimpleCalculator extends Application {
         Button calculateButton = new Button("Berechnen");
         calculateButton.setOnAction(e -> calculate());
 
+        // Löschen-Button
+        Button deleteButton = new Button("Löschen");
+        deleteButton.setOnAction(e -> delete());
+
         // Ergebnis
         resultLabel = new Label("Ergebnis: ");
+        // resultLabel.setStyle("-fx-font-size: 20");
 
-        root.getChildren().addAll(titleLabel, inputGrid, calculateButton, resultLabel);
+//        final Hbox hBox = new HBox;
+//        hBox.getChildren().addAll(calculateButton, deleteButton);
+//        root.getChildren().addAll(titleLabel, inputGrid, hBox, resultLabel);
+//      entweder das auskommentierte oder das unten
+//      unten ist alles untereinander, oben sind die Buttons nebeneinander
+        root.getChildren().addAll(titleLabel, inputGrid, calculateButton, deleteButton, resultLabel);
 
         Scene scene = new Scene(root, 350, 280);
         primaryStage.setTitle("Einfacher Calculator - JavaFX");
@@ -109,6 +122,12 @@ public class SimpleCalculator extends Application {
 
         // Ergebnis anzeigen
         resultLabel.setText("Ergebnis: " + num1 + " " + operator + " " + num2 + " = " + result);
+    }
+
+    private void delete() {
+        operand1Field.setText("");
+        operand2Field.setText("");
+        resultLabel.setText("");
     }
 
     public static void main(String[] args) {

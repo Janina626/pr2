@@ -2,13 +2,11 @@ package de.bht.pr2.lab05;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -35,6 +33,11 @@ public class CalculatorExercise extends Application {
     private TextField operand2Field;
     private ComboBox<String> operatorCombo;
     private Label resultLabel;
+    private Label errorLabel;
+    private Label historyLabel;
+    private ListView<String> historyView;
+    private ObservableList<String> historyList;
+
 
     @Override
     public void start(Stage primaryStage) {
@@ -53,12 +56,20 @@ public class CalculatorExercise extends Application {
 
         // Ergebnis
         resultLabel = new Label("Ergebnis: ");
+        errorLabel = new Label("");
+        errorLabel.setStyle("-fx-text-fill: red");
+        historyLabel = new Label("Berechnungs-Historie: ");
+        historyList= FXCollections.observableArrayList();
+        historyView = new ListView<>(historyList);
 
         root.getChildren().addAll(
             titleLabel,
             inputGrid,
             buttonBox,
-            resultLabel
+            resultLabel,
+            errorLabel,
+            historyLabel,
+            historyView
         );
 
         Scene scene = new Scene(root, 400, 500);
@@ -84,7 +95,7 @@ public class CalculatorExercise extends Application {
         // Operator
         Label operatorLabel = new Label("Operator:");
         operatorCombo = new ComboBox<>(
-            FXCollections.observableArrayList("+", "-", "*", "/")
+            FXCollections.observableArrayList("+", "-", "*", "/", "%", "√")
         );
         operatorCombo.setValue("+");
         operatorCombo.setPrefWidth(150);
@@ -110,8 +121,12 @@ public class CalculatorExercise extends Application {
         calculateButton.setOnAction(e -> calculate());
 
         Button clearButton = new Button("Löschen");
+        clearButton.setOnAction(e -> clear());
 
-        buttonBox.getChildren().addAll(calculateButton, clearButton);
+        Button clearHistoryButton = new Button("Historie Löschen");
+        clearHistoryButton.setOnAction(e -> clearHistory());
+
+        buttonBox.getChildren().addAll(calculateButton, clearButton, clearHistoryButton);
         return buttonBox;
     }
 
@@ -128,6 +143,16 @@ public class CalculatorExercise extends Application {
                 return;
             }
 
+//            if (!operatorCombo.getValue().equals("√") && (input1.isEmpty() || input2.isEmpty())) {
+//                showError("Bitte beide Zahlen eingeben!");
+//                return;
+//            }
+
+//            if (operatorCombo.getValue().equals("√") && input1.isEmpty()) {
+//                showError("Bitte die erste Zahl eingeben!");
+//                return;
+//            }
+
             double num1 = Double.parseDouble(input1);
             double num2 = Double.parseDouble(input2);
             String operator = operatorCombo.getValue();
@@ -142,19 +167,54 @@ public class CalculatorExercise extends Application {
                     }
                     yield num1 / num2;
                 }
+                case "%" -> {
+                    if (num2 == 0) {
+                        throw new ArithmeticException("Modulo geht nicht durch 0!");
+                    }
+                    if (num1 % 1 != 0 || num2 % 1 != 0) { // prüft, ob num1 eine Dezimalstelle hat
+                        throw new IllegalArgumentException("Traditionell ist Modulo nur für ganze Zahlen definiert.");
+                    }
+                    if (num1 < 0 || num2 < 0) {
+                        throw new IllegalArgumentException("Die Modulo-Operation ist für negative Zahlen nicht universell definiert.");
+                    }
+                    yield num1 % num2;
+                }
+                case "√" -> {
+                    if (num2 < 0 && num1 % 2 == 0) {
+                        throw new IllegalArgumentException("Mathematisch nicht möglich. Wenn Num1 grade, darf Nam2 nicht negativ sein");
+                    }
+                    yield Math.pow(num2, 1.0 / num1);
+                }
                 default -> 0;
             };
 
             // Ergebnis anzeigen
             String calculation = formatResult(num1, operator, num2, result);
             resultLabel.setText("Ergebnis: " + calculation);
+            errorLabel.setText("");
+            historyList.add(calculation);
 
 
         } catch (NumberFormatException e) {
             showError("Ungültige Zahl eingegeben!");
         } catch (ArithmeticException e) {
             showError(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            showError(e.getMessage());
         }
+
+    }
+
+    private void clear() {
+        operand1Field.clear();
+        operand2Field.clear();
+        operatorCombo.setValue("+");
+        resultLabel.setText("Ergebnis: ");
+        errorLabel.setText("");
+    }
+
+    private void clearHistory() {
+        historyList.clear();
     }
 
     /**
@@ -171,7 +231,8 @@ public class CalculatorExercise extends Application {
      * Zeigt eine Fehlermeldung an.
      */
     private void showError(String message) {
-        resultLabel.setText("Fehler: " + message);
+        resultLabel.setText("");
+        errorLabel.setText("Fehler: " + message);
     }
 
     public static void main(String[] args) {

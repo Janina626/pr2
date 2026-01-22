@@ -37,8 +37,7 @@ public abstract class Book {
         if (o == null || !(o instanceof Book)) return false;
         Book book = (Book) o;
         if (edition != book.edition) return false;
-        if (!title.equals(book.title)) return false;
-        return true;
+        return title.equals(book.title);
     }
 
     @Override

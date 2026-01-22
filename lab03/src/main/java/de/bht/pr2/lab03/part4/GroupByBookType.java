@@ -39,6 +39,7 @@ Hoerbuecher Anzahl: 5
     Set<Book> ebooks = new HashSet<>();
     Set<Book> audioBooks = new HashSet<>();
 
+    //groupByBookType
     for (String s : BookStore.getSoldBooks()) {
       Book b = BookParser.parse(s);
 
