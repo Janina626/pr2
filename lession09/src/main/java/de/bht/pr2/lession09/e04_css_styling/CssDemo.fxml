@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<!--
+    CSS Styling Demo.
+    Zeigt verschiedene gestylte UI-Elemente und Theme-Wechsel.
+-->
+
+<VBox spacing="20" styleClass="root-container" xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="de.bht.pr2.lession09.e04_css_styling.CssStylingController">
+
+    <padding>
+        <Insets bottom="25" left="25" right="25" top="25"/>
+    </padding>
+
+    <!-- Titel -->
+    <Label styleClass="title-label" text="CSS Styling Demo"/>
+
+    <!-- Theme-Wechsel -->
+    <HBox alignment="CENTER" spacing="15">
+        <Label text="Theme wechseln:"/>
+        <Button onAction="#handleLightTheme" styleClass="theme-button" text="Light"/>
+        <Button onAction="#handleDarkTheme" styleClass="theme-button" text="Dark"/>
+    </HBox>
+
+    <Label fx:id="themeLabel" styleClass="info-label" text="Aktuelles Theme: Light"/>
+
+    <Separator/>
+
+    <!-- Button-Varianten -->
+    <Label styleClass="section-label" text="Button-Varianten:"/>
+
+    <HBox alignment="CENTER" spacing="15">
+        <Button onAction="#handlePrimaryAction" styleClass="primary-button" text="Primary"/>
+        <Button onAction="#handleSecondaryAction" styleClass="secondary-button" text="Secondary"/>
+        <Button onAction="#handleDangerAction" styleClass="danger-button" text="Danger"/>
+    </HBox>
+
+    <Separator/>
+
+    <!-- Formular-Elemente -->
+    <Label styleClass="section-label" text="Formular-Styling:"/>
+
+    <GridPane hgap="15" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints minWidth="100"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label styleClass="form-label" text="Benutzername:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField promptText="Eingabe..." styleClass="styled-input"
+                   GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+        <Label styleClass="form-label" text="Passwort:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <PasswordField promptText="Passwort..." styleClass="styled-input"
+                       GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+    </GridPane>
+
+    <Separator/>
+
+    <!-- Info-Box -->
+    <VBox styleClass="info-box" spacing="5">
+        <Label styleClass="info-label" text="CSS-Eigenschaften in JavaFX:"/>
+        <Label text="- -fx-background-color: Hintergrundfarbe"/>
+        <Label text="- -fx-text-fill: Textfarbe"/>
+        <Label text="- -fx-font-size: Schriftgroesse"/>
+        <Label text="- -fx-padding: Innenabstand"/>
+        <Label text="- -fx-border-radius: Abrundung"/>
+    </VBox>
+
+</VBox>
