@@ -62,6 +62,20 @@ public class CalculatorExercise extends Application {
         historyList= FXCollections.observableArrayList();
         historyView = new ListView<>(historyList);
 
+        // Historie per Doppelklick wiederverwenden
+        historyView.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) {
+                String entry = historyView.getSelectionModel().getSelectedItem();
+                if (entry == null) return;
+                String[] parts = entry.split(" ");
+                if (parts.length >= 3) {
+                    operand1Field.setText(parts[0]);
+                    operatorCombo.setValue(parts[1]);
+                    operand2Field.setText(parts[2]);
+                }
+            }
+        });
+
         root.getChildren().addAll(
             titleLabel,
             inputGrid,
