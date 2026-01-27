@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -90,6 +91,13 @@ public class CalculatorExercise extends Application {
         primaryStage.setTitle("Übung 1: Calculator mit Historie");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        // Enter zum Berechnen
+        scene.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                calculate();
+            }
+        });
     }
 
     private GridPane createInputArea() {
