@@ -59,6 +59,8 @@ public class CalculatorExercise extends Application {
         resultLabel = new Label("Ergebnis: ");
         errorLabel = new Label("");
         errorLabel.setStyle("-fx-text-fill: red");
+        errorLabel.setWrapText(true);
+        // VBox.setMargin(errorLabel, new Insets(0, 0, 20, 0));
         historyLabel = new Label("Berechnungs-Historie: ");
         historyList= FXCollections.observableArrayList();
         historyView = new ListView<>(historyList);
@@ -90,7 +92,10 @@ public class CalculatorExercise extends Application {
         Scene scene = new Scene(root, 400, 500);
         primaryStage.setTitle("Übung 1: Calculator mit Historie");
         primaryStage.setScene(scene);
+        primaryStage.setMinWidth(350);
+        primaryStage.setMinHeight(450);
         primaryStage.show();
+        root.layout();
 
         // Enter zum Berechnen
         scene.setOnKeyPressed(e -> {
@@ -124,7 +129,7 @@ public class CalculatorExercise extends Application {
         inputGrid.add(operatorLabel, 0, 1);
         inputGrid.add(operatorCombo, 1, 1);
 
-        // operand2 deaktivieren bei Ein-Operand-Operatoren
+        // operand2 deaktivieren bei nur ein Zahl-Operand
         operatorCombo.setOnAction(e -> {
             String op = operatorCombo.getValue();
             boolean single = op.equals("n!") || op.equals("1/x");
