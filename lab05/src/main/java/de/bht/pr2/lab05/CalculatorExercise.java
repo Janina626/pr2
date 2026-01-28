@@ -117,12 +117,20 @@ public class CalculatorExercise extends Application {
         // Operator
         Label operatorLabel = new Label("Operator:");
         operatorCombo = new ComboBox<>(
-            FXCollections.observableArrayList("+", "-", "*", "/", "%", "√")
+            FXCollections.observableArrayList("+", "-", "*", "/", "%", "√", "x^y", "n!", "1/x")
         );
         operatorCombo.setValue("+");
         operatorCombo.setPrefWidth(150);
         inputGrid.add(operatorLabel, 0, 1);
         inputGrid.add(operatorCombo, 1, 1);
+
+        // operand2 deaktivieren bei Ein-Operand-Operatoren
+        operatorCombo.setOnAction(e -> {
+            String op = operatorCombo.getValue();
+            boolean single = op.equals("n!") || op.equals("1/x");
+            operand2Field.setDisable(single);
+            if (single) operand2Field.clear();
+        });
 
         // Zweite Zahl
         Label operand2Label = new Label("Zahl 2:");
@@ -157,68 +165,88 @@ public class CalculatorExercise extends Application {
      */
     private void calculate() {
         try {
-            String input1 = operand1Field.getText().trim();
-            String input2 = operand2Field.getText().trim();
+            String operator = operatorCombo.getValue();
+            double num1 = Double.parseDouble(operand1Field.getText().trim());
 
-            if (input1.isEmpty() || input2.isEmpty()) {
-                showError("Bitte beide Zahlen eingeben!");
-                return;
+            double result;
+            String calculation;
+
+            // Eine Zahl
+            if (operator.equals("n!") || operator.equals("1/x")) {
+
+                result = switch (operator) {
+                    case "n!" -> {
+                        if (num1 < 0 || num1 % 1 != 0)
+                            throw new IllegalArgumentException("Fakultät nur für ganze Zahlen ≥ 0");
+                        double f = 1;
+                        for (int i = 1; i <= (int) num1; i++) f *= i;
+                        yield f;
+                    }
+                    case "1/x" -> {
+                        if (num1 == 0)
+                            throw new ArithmeticException("Division durch 0");
+                        yield 1 / num1;
+                    }
+                    default -> 0;
+                };
+
+                calculation = operator + "(" + num1 + ") = " + result;
             }
 
-//            if (!operatorCombo.getValue().equals("√") && (input1.isEmpty() || input2.isEmpty())) {
-//                showError("Bitte beide Zahlen eingeben!");
-//                return;
-//            }
+            // Zwei Zahlen
+            else {
+                double num2 = Double.parseDouble(operand2Field.getText().trim());
 
-//            if (operatorCombo.getValue().equals("√") && input1.isEmpty()) {
-//                showError("Bitte die erste Zahl eingeben!");
-//                return;
-//            }
+                result = switch (operator) {
+                    case "+" -> num1 + num2;
+                    case "-" -> num1 - num2;
+                    case "*" -> num1 * num2;
+                    case "/" -> {
+                        if (num2 == 0)
+                            throw new ArithmeticException("Division durch 0");
+                        yield num1 / num2;
+                    }
+                    case "%" -> {
+                        if (num2 == 0)
+                            throw new ArithmeticException("Modulo durch 0 ist nicht definiert");
+                        if (num1 % 1 != 0 || num2 % 1 != 0)// prüft, ob num1 eine Dezimalstelle hat
+                            throw new IllegalArgumentException("Traditionell ist Modulo nur für ganze Zahlen definiert.");
+                        if (num1 < 0 || num2 < 0)
+                            throw new IllegalArgumentException("Die Modulo-Operation ist für negative Zahlen nicht universell definiert.");
+                        yield num1 % num2;
+                    }
+                    case "x^y" -> {
+                        if (num1 == 0 && num2 == 0)
+                            throw new ArithmeticException("Null hoch Null nicht definiert");
+                        if (num1 == 0 && num2 < 0)
+                            throw new ArithmeticException("0 hoch negativ ist nicht definiert");
+                        if (num1 < 0 && num2 % 1 != 0)
+                            throw new IllegalArgumentException("Negative Basis mit nicht-ganzzahligem Exponenten ergibt eine komplexe Zahl");
+                        yield Math.pow(num1, num2);
+                    }
+                    case "√" -> {
+                        if (num1 == 0)
+                            throw new ArithmeticException("0-te Wurzel ist nicht definiert");
+                        if (num1 % 1 != 0)
+                            throw new IllegalArgumentException("Der Wurzelexponent muss eine ganze Zahl sein");
+                        if (num2 < 0 && ((int) num1) % 2 == 0)
+                            throw new IllegalArgumentException("Gerade Wurzel aus negativer Zahl ist nicht reell");
+                        yield Math.pow(num2, 1.0 / num1);
+                    }
+                    default -> 0;
+                };
 
-            double num1 = Double.parseDouble(input1);
-            double num2 = Double.parseDouble(input2);
-            String operator = operatorCombo.getValue();
-
-            double result = switch (operator) {
-                case "+" -> num1 + num2;
-                case "-" -> num1 - num2;
-                case "*" -> num1 * num2;
-                case "/" -> {
-                    if (num2 == 0) {
-                        throw new ArithmeticException("Division durch 0!");
-                    }
-                    yield num1 / num2;
-                }
-                case "%" -> {
-                    if (num2 == 0) {
-                        throw new ArithmeticException("Modulo geht nicht durch 0!");
-                    }
-                    if (num1 % 1 != 0 || num2 % 1 != 0) { // prüft, ob num1 eine Dezimalstelle hat
-                        throw new IllegalArgumentException("Traditionell ist Modulo nur für ganze Zahlen definiert.");
-                    }
-                    if (num1 < 0 || num2 < 0) {
-                        throw new IllegalArgumentException("Die Modulo-Operation ist für negative Zahlen nicht universell definiert.");
-                    }
-                    yield num1 % num2;
-                }
-                case "√" -> {
-                    if (num2 < 0 && num1 % 2 == 0) {
-                        throw new IllegalArgumentException("Mathematisch nicht möglich. Wenn Num1 grade, darf Nam2 nicht negativ sein");
-                    }
-                    yield Math.pow(num2, 1.0 / num1);
-                }
-                default -> 0;
-            };
+                calculation = num1 + " " + operator + " " + num2 + " = " + result;
+            }
 
             // Ergebnis anzeigen
-            String calculation = formatResult(num1, operator, num2, result);
             resultLabel.setText("Ergebnis: " + calculation);
             errorLabel.setText("");
             historyList.add(calculation);
 
 
         } catch (NumberFormatException e) {
-            showError("Ungültige Zahl eingegeben!");
+            showError("Ungültige Zahl eingegeben! Vielleicht Komma statt Punkt benutzt?");
         } catch (ArithmeticException e) {
             showError(e.getMessage());
         } catch (IllegalArgumentException e) {
